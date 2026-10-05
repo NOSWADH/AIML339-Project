@@ -4,9 +4,18 @@ from sklearn.preprocessing import StandardScaler
 print("LOADED FROM:", __file__)
 
 #fits a StandardScaler on the flattened training sequences.
-def fit_scaler(X_train):
-    num_features = X_train.shape[2]
-    X_flat = X_train.reshape(-1, num_features)
+def fit_scaler(X_kaggle, X_hevy):
+    num_features = X_kaggle.shape[2]
+    X_all = np.concatenate([X_kaggle, X_hevy], axis=0)
+    X_flat = X_all.reshape(-1, num_features)
+
+    scaler = StandardScaler()
+    scaler.fit(X_flat)
+    return scaler
+
+def fit_scaler_single(X):
+    num_features = X.shape[2]
+    X_flat = X.reshape(-1, num_features)
 
     scaler = StandardScaler()
     scaler.fit(X_flat)
