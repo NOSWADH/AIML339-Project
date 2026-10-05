@@ -12,6 +12,6 @@ def build_lstm(seq_len, num_features, hidden_units=64):
         layers.Dense(2)  #next_weight, next_reps
     ])
 
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='rmse', metrics=['mae'])
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='mse', metrics=['mae'])
 
     return model
