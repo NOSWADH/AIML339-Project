@@ -9,6 +9,30 @@ import numpy as np
 print("LOADED FROM:", __file__)
 
 def preprocess(df, exercises):
+
+    #combining lat pulldown varients
+
+    def normalize_exercise(name):
+        n = name.lower()
+
+        if "lat" in n and ("pull" in n or "down" in n):
+            return "Lat Pulldown"
+
+        if "pulldown" in n:
+            return "Lat Pulldown"
+
+        if "high row" in n:
+            return "Lat Pulldown"
+
+        if "bench" in n and "press" in n:
+            return "Bench Press"
+
+        return name.strip()
+
+    df["exercise_title"] = df["exercise_title"].apply(normalize_exercise)
+
+
+    
     df = df[df['exercise_title'].isin(exercises)].copy()
     df = df.sort_values(['exercise_title', 'date'])
     

@@ -30,7 +30,7 @@ def load_hevy(path):
     df.rename(columns={'start_time': 'date'}, inplace=True)
 
     #convert to date time and sort by date
-    df['date'] = pd.to_datetime(df['date'], format="%b %d, %Y, %I:%M %p")
+    df['date'] = pd.to_datetime(df['date'], format='mixed', dayfirst=True)
     df = df.sort_values('date')
     
     return df
