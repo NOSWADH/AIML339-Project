@@ -13,17 +13,8 @@ def train_lstm(kaggle_sequences, kaggle_targets, seq_len, feature_cols,
 
     #chronological split
     X_train, y_train, X_val, y_val, X_test, y_test, train_idx, val_idx, test_idx = chronological_split(
-    kaggle_sequences, kaggle_targets
+        kaggle_sequences, kaggle_targets
     )
-
-
-    #fit scaler on train only
-    scaler = fit_scaler(X_train)
-
-    #apply scaler everywhere
-    X_train = transform_sequences(X_train, scaler)
-    X_val = transform_sequences(X_val, scaler)
-    X_test = transform_sequences(X_test, scaler)
 
     #build model
     num_features = len(feature_cols)
@@ -55,7 +46,6 @@ def train_lstm(kaggle_sequences, kaggle_targets, seq_len, feature_cols,
     #return everything needed for fine‑tuning
     return {
         "model": model,
-        "scaler": scaler,
         "X_test": X_test,
         "y_test": y_test,
         "train_idx": train_idx,
