@@ -1,15 +1,15 @@
-#Predicting Next Session Lifting Performance with a Personalised LSTM
-##AIML339 project, Dawson Howarth (300661017), Victoria University of Wellington
+# Predicting Next Session Lifting Performance with a Personalised LSTM
+## AIML339 project, Dawson Howarth (300661017), Victoria University of Wellington
 
 This project predicts a lifter's next session top set weight and reps for bench press and lat pulldown from their Hevy workout log. An LSTM is pretrained on a public single lifter log from Kaggle and then finetuned on my own log using two phase progressive unfreezing. It is compared against progression heuristics (persistence, +2.5 kg, +1 rep, Epley 1RM), ridge regression and XGBoost. Evaluation uses an expanding window walk forward protocol repeated over multiple random seeds, with paired Wilcoxon tests.
 
-###Main result (20 seeds, 85 walk forward test windows)
+### Main result (20 seeds, 85 walk forward test windows)
 The finetuned LSTM has MAE 9.91 +- 0.53 and RMSE 16.46 +- 0.59.
 Persistence has MAE 8.19 and RMSE 17.08.
 Finetuning clearly beats every model that never sees personal data.
 It does not beat simply repeating the last session: no difference against the heuristics is significant after Holm correction.
 
-##Repository Structure
+## Repository Structure
 AIML339/
     main.ipynb                  # Runs the whole pipeline: data, baselines, walk forward, stats, plots
         data/
@@ -34,7 +34,7 @@ AIML339/
 
 models/linear_regression.py and models/gradient_boosted.py are early versions of the baselines and are not used. The baselines actually used are defined in training/train_baselines.py (ridge, a = 1, and XGBoost) and training/finetune_walk.py (ridge refitted per fold).
 
-##Requirements
+## Requirements
 Python 3.10+
 TensorFlow 2.x (CPU is fine; native Windows has no GPU support for TF >= 2.11)
 scikit-learn, XGBoost, NumPy, pandas, SciPy, Matplotlib, Jupyter
@@ -43,21 +43,21 @@ pip install tensorflow scikit-learn xgboost numpy pandas scipy matplotlib jupyte
 
 The results in the report were produced on Windows 11 with an Intel Core CPU (no GPU).
 
-##Data
+## Data
 Both datasets use the Hevy export schema (title, start_time, end_time, exercise_title, set_index, set_type, weight_*, reps, ...).
 
 File	Source	Used for
 data/Hevy_workouts_log_100_weeks.csv	Kaggle: Hevy App Workout Dataset	Pretraining (190 sessions -> 182 windows)
 data/new_workout_data.csv	My own Hevy export (Aug 2025 - Oct 2026)	Finetuning and walk forward evaluation (117 sessions -> 109 windows)
 
-###Preprocessing summary (data/preprocess.py)
+### Preprocessing summary (data/preprocess.py)
 Exercise names are normalised by keyword. Note that this merges incline, dumbbell and Smith machine variants into "Bench Press", and cable, machine and high row variants into "Lat Pulldown" (discussed as a limitation in the report).
 Each session is reduced to its top set: the heaviest set, with ties broken by more reps.
 Seven features are computed per session: weight_kg, reps, session_volume, prev_top_weight, prev_top_reps, days_since_last, trend_slope.
 The targets are the next session's next_weight and next_reps for the same exercise.
 Windows of 5 consecutive sessions (seq_len = 5) form the model input. Windows never cross exercises.
 
-##How To Run
+## How To Run
 Open main.ipynb and run the cells in order:
 
 Cell	What it does	Output
@@ -75,7 +75,7 @@ Cells 6-8 and the plotting cell only read the saved files, so they can be rerun 
 
 Runtime: about 2.6 min per seed on a laptop CPU (pretraining = 9 s, plus 17 folds x = 9 s finetuning), so the 20 seed run takes about 1 hour. Set SEEDS = [1, 2] for a quick check first.
 
-##Configuration used for the report
+## Configuration used for the report
 Setting	Value
 Seeds	SEEDS = list(range(1, 21)) (seeds 1-20); each sets Python, NumPy and TensorFlow
 Ablation seeds	all 20 (ABLATION_SEEDS = 20)
@@ -91,7 +91,7 @@ Statistics	two sided Wilcoxon signed rank on per window MAE (LSTM averaged over 
 
 Metrics: MAE and RMSE in original units, averaged over both targets (kg and reps). Per target MAE (mae_w, mae_r) is also reported.
 
-##Notes and known limitations
+## Notes and known limitations
 Exercise variant mixing creates artificial load jumps, for example 85 -> 34 -> 85 kg on bench. This inflates every model's weight error.
 The scalers are fitted on pooled Kaggle and personal data, including later personal sessions (a mild leak).
 There is no per fold validation set, so the number of finetuning epochs is fixed rather than selected.
