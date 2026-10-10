@@ -71,7 +71,7 @@ def train_nonml_baselines(sequences_raw):
 # evaluate_models.py.
 # ---------------------------------------------------------
 
-def train_lr_baseline(X_train_flat_scaled, y_train_scaled):
+def train_ridge_baseline(X_train_flat_scaled, y_train_scaled):
     lr_weight = Ridge(alpha=1.0)
     lr_reps = Ridge(alpha=1.0)
     lr_weight.fit(X_train_flat_scaled, y_train_scaled[:, 0])
