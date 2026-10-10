@@ -11,26 +11,26 @@ It does not beat simply repeating the last session: no difference against the he
 
 ## Repository Structure
 AIML339/
-    main.ipynb                  # Runs the whole pipeline: data, baselines, walk forward, stats, plots
+    main.ipynb
         data/
-            load_data.py            # Load Kaggle / Hevy CSVs, drop unused columns, lb -> kg, parse dates
-            preprocess.py           # Exercise name normalisation, top set extraction, feature engineering, targets
-            sequence_builder.py     # 5 session sliding windows per exercise, (X, y, exercise labels)
-            Hevy_workouts_log_100_weeks.csv   # Kaggle pretraining log (see "Data")
-            new_workout_data.csv              # My personal Hevy export (see "Data")
+            load_data.py
+            preprocess.py
+            sequence_builder.py
+            Hevy_workouts_log_100_weeks.csv
+            new_workout_data.csv
         models/
-            lstm.py                 # LSTM(64) -> Dense(32, ReLU) -> Dense(2)
+            lstm.py
         training/
-            train_lstm.py           # Pretraining on Kaggle (chronological split, early stopping)
-            finetune_walk.py        # Walk forward finetuning + all baselines + ablation (MAIN EVALUATION)
-            finetune_lstm.py        # Finetunes on ALL personal data -> final deployable model (not used for evaluation)
-            train_baselines.py      # Heuristic baselines, ridge and XGBoost on Kaggle data
+            train_lstm.py
+            finetune_walk.py
+            finetune_lstm.py
+            train_baselines.py
         evaluation/
-            metrics.py              # MAE, RMSE
-            evaluate_models.py      # Kaggle test split evaluation of the baselines
+            metrics.py
+            evaluate_models.py
         utils/
-            scaler.py               # StandardScaler fitting/applying on 3D sequence arrays
-            split.py                # Chronological train/val/test split (65/20/15)
+            scaler.py
+            split.py
 
 models/linear_regression.py and models/gradient_boosted.py are early versions of the baselines and are not used. The baselines actually used are defined in training/train_baselines.py (ridge, a = 1, and XGBoost) and training/finetune_walk.py (ridge refitted per fold).
 
