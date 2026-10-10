@@ -1,9 +1,9 @@
 #Predicting Next Session Lifting Performance with a Personalised LSTM
-##AIML339 project, Dawson Howarth (300661017), Victoria University of Wellington.
+##AIML339 project, Dawson Howarth (300661017), Victoria University of Wellington
 
 This project predicts a lifter's next session top set weight and reps for bench press and lat pulldown from their Hevy workout log. An LSTM is pretrained on a public single lifter log from Kaggle and then finetuned on my own log using two phase progressive unfreezing. It is compared against progression heuristics (persistence, +2.5 kg, +1 rep, Epley 1RM), ridge regression and XGBoost. Evaluation uses an expanding window walk forward protocol repeated over multiple random seeds, with paired Wilcoxon tests.
 
-###Main result (20 seeds, 85 walk forward test windows):
+###Main result (20 seeds, 85 walk forward test windows)
 The finetuned LSTM has MAE 9.91 ± 0.53 and RMSE 16.46 ± 0.59.
 Persistence has MAE 8.19 and RMSE 17.08.
 Finetuning clearly beats every model that never sees personal data.
@@ -37,7 +37,9 @@ models/linear_regression.py and models/gradient_boosted.py are early versions of
 ##Requirements
 Python 3.10+
 TensorFlow 2.x (CPU is fine; native Windows has no GPU support for TF ≥ 2.11)
-scikit learn, XGBoost, NumPy, pandas, SciPy, Matplotlib, Jupyter
+scikit-learn, XGBoost, NumPy, pandas, SciPy, Matplotlib, Jupyter
+bash
+pip install tensorflow scikit-learn xgboost numpy pandas scipy matplotlib jupyter
 
 The results in the report were produced on Windows 11 with an Intel Core CPU (no GPU).
 
@@ -48,7 +50,7 @@ File	Source	Used for
 data/Hevy_workouts_log_100_weeks.csv	Kaggle: Hevy App Workout Dataset	Pretraining (190 sessions → 182 windows)
 data/new_workout_data.csv	My own Hevy export (Aug 2025 – Oct 2026)	Finetuning and walk forward evaluation (117 sessions → 109 windows)
 
-###Preprocessing summary (data/preprocess.py):
+###Preprocessing summary (data/preprocess.py)
 Exercise names are normalised by keyword. Note that this merges incline, dumbbell and Smith machine variants into "Bench Press", and cable, machine and high row variants into "Lat Pulldown" (discussed as a limitation in the report).
 Each session is reduced to its top set: the heaviest set, with ties broken by more reps.
 Seven features are computed per session: weight_kg, reps, session_volume, prev_top_weight, prev_top_reps, days_since_last, trend_slope.
